@@ -51,6 +51,7 @@
 #include "prefetcher/pref.param.h"
 #include "prefetcher/pref_common.h"
 #include "statistics.h"
+#include "stat.h"
 
 /**************************************************************************************/
 /* Macros */
@@ -668,3 +669,57 @@ Flag pref_stream_bw_prefetchable(uns proc_id, Addr line_addr) {
     
   return stream->buffer_full;
 }
+
+
+#include "pref_common.h"
+
+BO_Prefetcher_Data global_bo_data;  
+
+//bo init
+void bo_prefetch_init() {
+    memset(&global_bo_data, 0, sizeof(BO_Prefetcher_Data));
+    for (int i = 0; i < MAX_OFFSETS; i++) {
+        global_bo_data.offsets[i].offset = i + 1;  // Example: Initialize offsets
+    }
+}
+
+// bo training
+void bo_train(BO_Prefetcher_Data* bo_data, Addr line_addr) {
+    for (int i = 0; i < MAX_OFFSETS; i++) {
+        Addr test_addr = line_addr + bo_data->offsets[i].offset;
+        if (cache_hit(test_addr)) {
+            bo_data->offsets[i].score++;  
+        } else {
+            bo_data->offsets[i].score--;  
+        }
+    }
+}
+
+// bo prediction
+Addr bo_predict(BO_Prefetcher_Data* bo_data, Addr line_addr) {
+    int max_score = -1;
+    int best_offset_index = 0;
+
+    for (int i = 0; i < MAX_OFFSETS; i++) {
+        if (bo_data->offsets[i].score > max_score) {
+            max_score = bo_data->offsets[i].score;
+            best_offset_index = i;
+        }
+    }
+    bo_data->best_offset = bo_data->offsets[best_offset_index].offset;
+    STAT_EVENT(pref_id, BO_OFFSET_SELECTED); 
+    return line_addr + bo_data->best_offset;
+}
+
+// bo prefetching
+void bo_prefetch(Addr line_addr, uns8 proc_id) {
+    BO_Prefetcher_Data* bo_data = &global_bo_data;
+    STAT_EVENT(pref_id, BO_PREFETCH_TOTAL);  
+    Addr prefetched_addr = bo_predict(bo_data, line_addr);
+    if (pref_addto_ul1req_queue(proc_id, prefetched_addr >> LOG2(DCACHE_LINE_SIZE), PREFETCHER_ID)) {
+        if (cache_hit(prefetched_addr)) {
+            STAT_EVENT(pref_id, BO_PREFETCH_USEFUL);  
+        }
+    }
+}
+

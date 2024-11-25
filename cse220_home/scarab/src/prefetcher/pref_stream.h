@@ -88,6 +88,20 @@ typedef struct{
   Pref_Stream* pref_stream_core_umlc;
 } stream_prefetchers;
 
+//implemented
+typedef struct BO_Offset_Struct {
+    int offset; 
+    int score; 
+} BO_Offset_Struct;
+
+#define MAX_OFFSETS 16
+
+typedef struct BO_Prefetcher_Data {
+    BO_Offset_Struct offsets[MAX_OFFSETS];  
+    int best_offset; 
+} BO_Prefetcher_Data;
+
+
 void pref_stream_init(HWP* hwp);
 
 void pref_stream_per_core_done(uns proc_id);
@@ -133,6 +147,14 @@ void pref_stream_throttle_stream(int index);
 float pref_stream_acc_getacc(Pref_Stream* pref_stream, int index, float pref_acc);
 void  pref_stream_acc_ul1_useful(Pref_Stream* pref_stream, Addr line_index);
 void  pref_stream_acc_ul1_issued(Pref_Stream* pref_stream, Addr line_index);
-///////////////////////////////////////////////////
 
+//implemented 
+
+void bo_prefetch(Addr line_addr, uns8 proc_id);
+void bo_train(BO_Prefetcher_Data* bo_data, Addr line_addr);
+Addr bo_predict(BO_Prefetcher_Data* bo_data, Addr line_addr);
+void bo_prefetch_init();
+void bo_prefetch_done();
+
+///////////////////////////////////////////////////
 #endif /*  __PREF_STREAM_H__*/
