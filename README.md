@@ -7,6 +7,13 @@ Karen Lee, Izat Temiraliev
 
 Paper Implemented: https://ieeexplore.ieee.org/document/7446087
 
-The code given has different prefetchers that are being used in different conditions.  We added the Best Offset Prefetcher Implementation inside the pref_stream.h and .c files, because we had some bugs related to the Makefile.
+Code Implemented in:
+pref_bop.param.def  – to be able to enable BO prefetcher 
+pref_bop.param.h 
+pref_table.def - we added our “bop” here
 
-We are currently in the process of updating dcache_stage.c and dcache_stage.h files in order for BOP to be selected and see the differences it makes on latency and cache misses/hits.  Once we make sure that BOP is being chosen, we will adjust the stats definition to measure its performance.
+Implementation of the Prefetcher itself:
+pref_bop.c - implementation for BO prefetcher
+pref_bop.h - header file for BO prefetcher
+
+We used per-core implementation, since UL1 and UMLC operate on different cores.
