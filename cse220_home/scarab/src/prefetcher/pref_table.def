@@ -87,5 +87,11 @@ HWP pref_table [] = {
                   NULL,
 		  NULL,        		NULL,      		NULL,      
           NULL,        		NULL,   	   	NULL,   		
-		  NULL,      		NULL,       		NULL    }
+		  NULL,      		NULL,       		NULL    },
+		  
+    { "bop",      PREF_TO_UMLC,  		NULL,   		pref_bop_init,  	NULL,
+                  NULL,
+	 	  NULL,  		NULL,         		NULL,
+          pref_bop_umlc_miss,        		NULL,   pref_bop_umlc_prefhit,   		
+	     	  pref_bop_ul1_miss,    NULL,     		pref_bop_ul1_prefhit  }
 };
