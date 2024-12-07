@@ -27,10 +27,10 @@
     ],
     "experiment": "lab1",
     "configurations": {
-        "stream": "--dcache_size=4096 --pref_framework_on 1 --pref_umlc_on 1 --pref_stream_on 1",
-        "ghb": "--dcache_size=4096 --pref_framework_on 1  --pref_umlc_on 1 --pref_ghb_on 1",
-        "stride": "--dcache_size=4096 --pref_framework_on 1 --pref_umlc_on 1 --pref_stride_on 1",
+        "2dc": "--dcache_size=4096 --pref_framework_on 1 --pref_umlc_on 1 --pref_ul1_on 1 --pref_2dc_on 1",
+        "ghb": "--dcache_size=4096 --pref_framework_on 1  --pref_umlc_on 1 --pref_ul1_on 1 --pref_ghb_on 1",
+        "stride": "--dcache_size=4096 --pref_framework_on 1 --pref_umlc_on 1 --pref_ul1_on 1 --pref_stride_on 1",
         "bop": "--dcache_size=4096 --pref_framework_on 1 --pref_umlc_on 1 --pref_ul1_on 1 --pref_bop_on 1",
-        "no-prefetch": "--dcache_size=4096"
+        "no-prefetch": "--dcache_size=4096 --pref_framework_on 0 --pref_stream_on 0"
     }
 }
